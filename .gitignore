@@ -1,0 +1,6 @@
+/work/
+/dist/
+.DS_Store
+# local Claude Code tooling notes, not part of the project
+/CLAUDE.md
+aqtinstall.log

@@ -1,0 +1,35 @@
+name: Watch upstream releases
+
+# Once a week, open an issue in THIS repository when gottcode/focuswriter
+# has a tag newer than UPSTREAM_TAG in config.env. Nothing is built or
+# posted anywhere else.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Compare tags
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          source config.env
+          latest=$(git ls-remote --tags --refs "$UPSTREAM_REPO" 'v*' |
+            sed 's|.*refs/tags/||' | sort -V | tail -n 1)
+          echo "packaged=$UPSTREAM_TAG upstream=$latest"
+          [ "$latest" = "$UPSTREAM_TAG" ] && exit 0
+          title="Upstream released $latest"
+          if gh issue list --state open --search "\"$title\" in:title" --json number --jq 'length' | grep -qv '^0$'; then
+            echo "Issue already open"; exit 0
+          fi
+          gh issue create --title "$title" --body "Upstream tag \`$latest\` is newer than \`$UPSTREAM_TAG\`. Follow docs/RUNBOOK.md."
