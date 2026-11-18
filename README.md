@@ -31,7 +31,7 @@ check that the file was built by this repository's workflow from a public
 commit:
 
 ```bash
-gh attestation verify FocusWriter-*.dmg --repo OWNER/focuswriter-macos
+gh attestation verify FocusWriter-*.dmg --repo carlok/focuswriter-macos
 ```
 
 **2. Copy the app.** Open the `.dmg` and drag **FocusWriter** onto

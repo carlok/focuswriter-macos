@@ -43,7 +43,7 @@ The workflow builds, audits, signs, smoke-tests, attests and creates a
 ## 5. Check the draft (5 min)
 
 ```bash
-gh release download vX.Y.Z-mac1 -D /tmp/fw && cd /tmp/fw && shasum -a 256 -c SHA256SUMS && gh attestation verify *.dmg --repo OWNER/focuswriter-macos
+gh release download vX.Y.Z-mac1 -D /tmp/fw && cd /tmp/fw && shasum -a 256 -c SHA256SUMS && gh attestation verify *.dmg --repo carlok/focuswriter-macos
 ```
 
 Open the DMG, drag the app somewhere, and open it via the README's
