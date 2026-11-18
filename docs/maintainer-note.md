@@ -12,7 +12,8 @@ Subject: Unofficial macOS builds of FocusWriter
 Hi Graeme,
 
 I've started publishing unofficial universal (Apple Silicon + Intel) macOS
-DMGs of FocusWriter at <URL>, built by GitHub Actions from your release tags
+DMGs of FocusWriter at
+https://github.com/carlok/focuswriter-macos, built by GitHub Actions from your release tags
 with no source changes. They are ad-hoc signed and not notarized, and the page
 says clearly that they're not affiliated with you.
 
