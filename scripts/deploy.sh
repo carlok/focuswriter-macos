@@ -45,6 +45,15 @@ if grep -q '^ERROR' "$WORK/macdeployqt.log"; then
 	exit 1
 fi
 
+# Mark the bundle as an unofficial build where Finder shows it (Get Info).
+# Text only: name, bundle id and settings location stay upstream's. The
+# bundle is (re)signed after this step.
+echo "==> Labelling as unofficial build"
+PLIST=$APP/Contents/Info.plist
+COPYRIGHT=$(/usr/libexec/PlistBuddy -c 'Print :NSHumanReadableCopyright' "$PLIST")
+plutil -replace NSHumanReadableCopyright \
+	-string "$COPYRIGHT. Unofficial macOS build: ${PACKAGER_URL#https://}" "$PLIST"
+
 echo "==> Auditing bundle"
 "$ROOT/scripts/audit.sh" "$APP" arm64 x86_64
 

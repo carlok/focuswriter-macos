@@ -104,5 +104,8 @@ something from outside the bundle, or lacks an arm64 or x86_64 slice.
 - **Qt minimum OS.** Qt 6.12 needs macOS 14.4 or later. Users on 12–13 would
   need a Qt 6.8 LTS build; set `QT_VERSION=6.8.x` in `config.env` if that
   matters.
+- **hdiutil deprecation.** macOS 27 warns that `hdiutil attach -mountpoint`
+  is deprecated in favour of `diskutil image attach`. It still works; switch
+  `dmg.sh` when it stops.
 - **Mirror flakiness.** aqtinstall's mirror rotation served a bad TLS
   certificate once during setup; `build.sh` pins `download.qt.io`.

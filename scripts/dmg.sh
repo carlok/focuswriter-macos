@@ -18,7 +18,8 @@ DIST=${DIST:-$ROOT/dist}
 REVISION=${1:-}
 
 VERSION=$(defaults read "$APP/Contents/Info.plist" CFBundleShortVersionString)
-NAME="FocusWriter-$VERSION-macOS-universal${REVISION:+-r$REVISION}"
+NAME="FocusWriter-$VERSION-macOS-universal-unofficial${REVISION:+-r$REVISION}"
+VOLNAME="FocusWriter (unofficial build)"
 DISK=$WORK/disk/FocusWriter
 
 echo "==> Preparing disk folder"
@@ -34,6 +35,27 @@ cp "$SRC/COPYING" "$DISK/License.txt"
 	printf '\n\nNEWS\n====\n\n'
 	cat "$SRC/ChangeLog"
 } >"$DISK/Read Me.txt"
+
+cat >"$DISK/About this build.txt" <<EOF
+UNOFFICIAL macOS BUILD OF FOCUSWRITER $VERSION${REVISION:+ (package revision $REVISION)}
+
+This disk image was not made by the FocusWriter author, Graeme Gott, and is
+not endorsed by him. It contains FocusWriter built from the unmodified
+upstream source:
+
+  Upstream tag:     $UPSTREAM_TAG
+  Upstream commit:  $(git -C "$SRC" rev-parse HEAD)
+  Qt:               $QT_VERSION (official universal binaries)
+  Built by:         $PACKAGER_URL
+
+Problems with this build (it won't open, crashes on start, missing images or
+sounds): report them at $PACKAGER_URL/issues
+Problems with FocusWriter itself: see https://gottcode.org/focuswriter/
+
+The app is signed ad-hoc and not notarized by Apple. The first time you open
+it, macOS will block it. See "Install" at $PACKAGER_URL for the one-time
+step. Checksums and a build provenance attestation are on the release page.
+EOF
 
 # The bundle ships Qt and FFmpeg as shared libraries (LGPL). Include their
 # license texts and say where the corresponding source is.
@@ -65,7 +87,7 @@ EOF
 
 echo "==> Creating $NAME.dmg"
 rm -f "$DIST/$NAME.dmg"
-hdiutil create -quiet -volname FocusWriter -srcfolder "$DISK" \
+hdiutil create -quiet -volname "$VOLNAME" -srcfolder "$DISK" \
 	-fs HFS+ -format UDZO -imagekey zlib-level=9 "$DIST/$NAME.dmg"
 
 # The bundle inside the image must still verify after packaging.
