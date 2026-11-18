@@ -1,10 +1,11 @@
 #!/bin/bash
 # Package the signed app into a compressed DMG with an Applications link,
-# the license and a ReadMe (same contents as upstream's mac_deploy.sh), and
-# write SHA256SUMS next to it.
+# the license and a ReadMe (same contents as upstream's mac_deploy.sh), add
+# the upstream source tarball, and write SHA256SUMS for both.
 #
 # Usage: scripts/dmg.sh [revision]      e.g. scripts/dmg.sh 1
-# Output: dist/FocusWriter-<version>-macOS-universal[-rN].dmg, dist/SHA256SUMS
+# Output: dist/FocusWriter-<version>-macOS-universal[-rN].dmg,
+#         dist/focuswriter-<version>-source.tar.gz, dist/SHA256SUMS
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -74,5 +75,11 @@ codesign --verify --deep --strict "$MNT/FocusWriter.app"
 hdiutil detach -quiet "$MNT"
 rmdir "$MNT"
 
-(cd "$DIST" && shasum -a 256 "$NAME.dmg" >SHA256SUMS)
+# GPL-3 section 6: ship the exact corresponding source next to the binary,
+# rather than relying on upstream keeping its tag available.
+SOURCE="focuswriter-$VERSION-source.tar.gz"
+echo "==> Archiving upstream source $(git -C "$SRC" rev-parse --short HEAD)"
+git -C "$SRC" archive --format=tar.gz --prefix="focuswriter-$VERSION/" -o "$DIST/$SOURCE" HEAD
+
+(cd "$DIST" && shasum -a 256 "$NAME.dmg" "$SOURCE" >SHA256SUMS)
 cat "$DIST/SHA256SUMS"

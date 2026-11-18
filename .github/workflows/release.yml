@@ -75,7 +75,9 @@ jobs:
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
-          subject-path: dist/*.dmg
+          subject-path: |
+            dist/*.dmg
+            dist/*-source.tar.gz
 
       - name: Keep DMG as workflow artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -99,17 +101,21 @@ jobs:
             echo "- Universal (Apple Silicon + Intel), macOS $(defaults read "$PWD/work/stage/FocusWriter.app/Contents/Info.plist" LSMinimumSystemVersion) or later"
             echo "- Upstream commit: \`$(cat work/upstream-commit.txt)\`"
             echo "- Qt $QT_VERSION (official binaries)"
+            echo "- Corresponding source: \`$(cd dist && ls *-source.tar.gz)\` (exact upstream tree that was built)"
             echo "- Ad-hoc signed, **not notarized**: see [Install](https://github.com/$GITHUB_REPOSITORY#install) for the one-time Gatekeeper step."
             echo
             echo "Verify:"
             echo '```'
-            echo "shasum -a 256 -c SHA256SUMS"
+            echo "shasum -a 256 --ignore-missing -c SHA256SUMS"
             echo "gh attestation verify $dmg --repo $GITHUB_REPOSITORY"
             echo '```'
             echo
-            echo "SHA-256: \`$(cut -d' ' -f1 dist/SHA256SUMS)\`"
+            echo "SHA-256:"
+            echo '```'
+            cat dist/SHA256SUMS
+            echo '```'
           } > notes.md
-          gh release create "$TAG" dist/*.dmg dist/SHA256SUMS \
+          gh release create "$TAG" dist/*.dmg dist/*-source.tar.gz dist/SHA256SUMS \
             --draft --verify-tag \
             --title "FocusWriter ${UPSTREAM_TAG#v} for macOS (r${TAG##*-mac})" \
             --notes-file notes.md

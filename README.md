@@ -23,7 +23,7 @@ installer" repositories on GitHub are not this project.
 with both files:
 
 ```bash
-shasum -a 256 -c SHA256SUMS
+shasum -a 256 --ignore-missing -c SHA256SUMS
 ```
 
 It must print `OK`. With the [GitHub CLI](https://cli.github.com) you can also
@@ -80,7 +80,7 @@ to `work/qt/<version>/macos` to include the image-plugin test). See
 ## License
 
 FocusWriter is © Graeme Gott and licensed under the GNU GPL v3 or later; each
-DMG includes its license as `License.txt`, and the corresponding source is
-the upstream tag named in the release notes. The packaging scripts in this
+DMG includes its license as `License.txt`, and each release carries the exact
+corresponding source as `focuswriter-<version>-source.tar.gz`. The packaging scripts in this
 repository are also GPL-3.0-or-later (see `LICENSE`). Qt is used under the
 LGPL v3.
