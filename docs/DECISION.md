@@ -78,8 +78,11 @@ something from outside the bundle, or lacks an arm64 or x86_64 slice.
   built-in themes.
 - A simulated download (quarantined DMG, app copied out) is blocked.
   `xattr -dr com.apple.quarantine` then lets it launch.
-- Still needs a person: the "Open Anyway" click-through, the spell-check
-  underline, and ODT/DOCX/RTF rendering in the editor (see RUNBOOK step 5).
+- Checked by eye in the running app: RTF, DOCX and ODT files (made with
+  `textutil`) open with their text and accented characters, and misspelled
+  words get the red spell-check underline.
+- Not yet checked: the System Settings "Open Anyway" click-through, and the
+  CI workflow, which runs only after the repo is pushed.
 
 ## Cost
 
